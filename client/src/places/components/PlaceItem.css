@@ -37,17 +37,22 @@
   border-top: 1px solid #ccc;
 }
 
-/* .place-item__modal-content {
+.place-item__modal-content {
   padding: 0;
 }
 
-.place-item__modal-actions {
+/* .place-item__modal-actions {
   text-align: right;
 } */
 
 .place-item__actions button,
 .place-item__actions a {
   margin: 0.5rem;
+}
+
+.map-container {
+  height: 15rem;
+  width: 100%;
 }
 
 @media (min-width: 768px) {
