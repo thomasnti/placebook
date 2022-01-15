@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Card from '../../shared/components/UIElements/Card';
 import Button from '../../shared/components/FormElements/Button';
 import Modal from '../../shared/components/UIElements/Modal';
+import Map from '../../shared/components/UIElements/Map';
 import './PlaceItem.css';
 
 function PlaceItem(props) {
@@ -22,7 +23,8 @@ function PlaceItem(props) {
         footer={<Button onClick={closeMapHandler}>Close</Button>}
       >
         <div className="map-container">
-          <h2>Here i will render the google map</h2>
+          <Map center={props.coordinates} zoom={14}/> 
+          {/* google maps need a center and zoom level in order to be rendered */}
         </div>
       </Modal>
       <Card className="place-item__content">
