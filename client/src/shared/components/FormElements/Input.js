@@ -1,10 +1,9 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 
-import './Input.css';
 import { validate } from '../../util/validators';
+import './Input.css';
 
 const inputReducer = (state, action) => {
-  debugger;
   switch (action.type) {
     case 'CHANGE':
       // return { ...state, value: action.val, isValid: true };
@@ -24,12 +23,18 @@ const inputReducer = (state, action) => {
 };
 
 function Input(props) {
-  const initialState = {
+  const [inputState, dispatch] = useReducer(inputReducer, {
     value: '',
-    isValid: false,
-  };
-  const [inputState, dispatch] = useReducer(inputReducer, initialState);
-  //* inputState changes whenever inputReducer is called (changeHandler -> dispatch -> inputReducer)
+    isBlured: false,
+    isValid: false
+  }); //* inputState changes whenever inputReducer is called (changeHandler -> dispatch -> inputReducer)
+
+  const {id, onInput} = props,
+        {value, isValid} = inputState;
+
+  useEffect(() => {
+    onInput(id, value, isValid)
+  }, [id, value, isValid, onInput])
 
   const changeHandler = (event) => {
     // dispatch is useReducer's seter method
@@ -38,7 +43,6 @@ function Input(props) {
 
   // is executed when user clicks out of the input
   const inputBlurHandler = () => {
-    debugger;
     dispatch({type: 'BLUR'})
   };
 
