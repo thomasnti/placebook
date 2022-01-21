@@ -1,2 +1,6 @@
 # get request
-GET  http://localhost:5000/
+GET  http://localhost:5000/api/places/p2
+
+### 3 hashes required
+
+GET http://localhost:5000/api/places/user/u1
