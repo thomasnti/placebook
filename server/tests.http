@@ -1,6 +1,8 @@
-# get request
-GET  http://localhost:5000/api/places/p2
-
 ### 3 hashes required
+### Get place by id
+GET  http://localhost:5000/api/places/p3
 
-GET http://localhost:5000/api/places/user/u1
+### Get places by user id
+GET http://localhost:5000/api/places/user/u2
+
+###
