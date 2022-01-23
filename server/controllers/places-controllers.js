@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require("uuid");
 const {validationResult} = require('express-validator');
 
 const HttpError = require("../models/http-error");
+const getCoordsForAdrress = require('../util/location');
 
 let DUMMY_PLACES = [
   {
@@ -36,7 +37,7 @@ function getPlaceById(req, res, next) {
     res.json({ place: place });
   } else {
     // res.status(404).send({message: 'There is no place with such id!!'})
-    throw new HttpError("Could not find a place for the provided id.", 404);
+    throw new HttpError("Could not find a place for the provided id.", 404); //* "throw" ends the function similarly to "return"
   }
 }
 
@@ -56,10 +57,17 @@ function getPlacesByUserId(req, res, next) {
   }
 }
 
-function createPlace(req, res, next) {
+async function createPlace(req, res, next) {
   expressValidatorError(req); // call express-validation validationResult to check for errors
 
-  const { title, description, coordinates, address, creator } = req.body;
+  const { title, description, address, creator } = req.body;
+
+  let coordinates;
+  try {
+    coordinates = await getCoordsForAdrress(address);
+  } catch (error) {
+    return next(error);
+  }
 
   const createdPlace = {
     id: uuidv4(),
