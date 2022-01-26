@@ -3,6 +3,7 @@ const {validationResult} = require('express-validator');
 
 const HttpError = require("../models/http-error");
 const getCoordsForAdrress = require('../util/location');
+const Place = require('../models/Place');
 
 let DUMMY_PLACES = [
   {
@@ -29,27 +30,41 @@ let DUMMY_PLACES = [
   },
 ];
 
-function getPlaceById(req, res, next) {
+// **
+async function getPlaceById(req, res, next) {
   const placeId = req.params.pid;
-  const place = DUMMY_PLACES.find((p) => p.id === placeId);
+  let place;
+  try {
+    place = await Place.findById(placeId);
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError('Something went wrong, could not find this place.', 500));
+  }
 
   if (place) {
-    res.json({ place: place });
+    //Document.prototype.toObject() Mongoose method
+    res.json({ place: place.toObject({getters: true}) }); // returns also id without _
   } else {
-    // res.status(404).send({message: 'There is no place with such id!!'})
     throw new HttpError("Could not find a place for the provided id.", 404); //* "throw" ends the function similarly to "return"
   }
 }
 
-function getPlacesByUserId(req, res, next) {
+// **
+async function getPlacesByUserId(req, res, next) {
   const userId = req.params.uid;
-  const places = DUMMY_PLACES.filter((place) => {
-    // console.log(place.creator);
-    return place.creator === userId;
-  });
+
+  let places;
+  try {
+    places = await Place.find({creator: userId})
+  } catch (err) {
+    console.log(err);
+    return next(
+      new HttpError("Fetching places failed, please try again later", 500)
+    );
+  }
 
   if (places && places.length > 0) {
-    res.send({ places });
+    res.json({ places: places.map(place => place.toObject({getters: true})) });
   } else {
     return next(
       new HttpError("Could not find a place for the provided user id", 404)
@@ -57,6 +72,7 @@ function getPlacesByUserId(req, res, next) {
   }
 }
 
+// **
 async function createPlace(req, res, next) {
   expressValidatorError(req); // call express-validation validationResult to check for errors
 
@@ -68,45 +84,88 @@ async function createPlace(req, res, next) {
   } catch (error) {
     return next(error);
   }
-
-  const createdPlace = {
-    id: uuidv4(),
+  const createdPlace = new Place({
     title, // shortcut for title: title
     description,
-    location: coordinates,
+    image: 'link for the image',
     address,
-    creator,
-  };
+    location: coordinates,
+    creator
+  })
 
-  DUMMY_PLACES.push(createdPlace);
+  try {
+    await createdPlace.save();
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError('Creating place failed, please try again', 500));
+  }
+
   res.status(201).json({ place: createdPlace });
 }
 
-function updatePlace(req, res, next) {
+// **
+async function updatePlace(req, res, next) {
   expressValidatorError(req);
 
   const { title, description } = req.body; // we allow to update only title and description
   const placeId = req.params.pid;
 
-  // const updatedPlace = DUMMY_PLACES.find(p => p.id === placeId) Not a good practice
-  const updatedPlace = { ...DUMMY_PLACES.find((p) => p.id === placeId) }; // instead i create a copy of DUMMY_PLACES object
-  const placeIndex = DUMMY_PLACES.findIndex((p) => p.id === placeId);
+  /* first way
+  let updatedPlace;
+  try {
+    updatedPlace = await Place.findById(placeId);
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError('Updating place failed, please try again', 500));
+  }
+
   updatedPlace.title = title;
   updatedPlace.description = description;
 
-  DUMMY_PLACES[placeIndex] = updatedPlace;
-
-  res.status(200).json({ place: updatedPlace });
-}
-
-function deletePlace(req, res, next) {
-  const placeId = req.params.pid;
-
-  if (!DUMMY_PLACES.find(p => p.id === placeId)) {
-    throw new HttpError('Could not find a place for that id.', 404);
+  try {
+    await updatedPlace.save();
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError('Updating place failed, please try again', 500));
+  }
+*/
+  // second way
+  let updatedPlace;
+  try {
+    updatedPlace = await Place.findByIdAndUpdate({_id: placeId}, {title: title, description: description});
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError('Updating place failed, please try again', 500));
   }
 
-  DUMMY_PLACES = DUMMY_PLACES.filter(p => p.id !== placeId);
+  res.status(200).json({ place: updatedPlace.toObject({getters: true}) });
+}
+
+// **
+async function deletePlace(req, res, next) {
+  const placeId = req.params.pid;
+
+  let place;
+  try {
+    place = await Place.findById(placeId);
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError(
+      'Something went wrong, could not delete place.',
+      500
+    ));
+  }
+
+  try {
+    await place.remove();
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError(
+      'Something went wrong, could not delete place.',
+      500
+    ));
+  }
+
   res.status(200).json({message: `Place with id: ${placeId} deleted!`})
 }
 
