@@ -6,7 +6,7 @@ Content-Type: application/json
   "title": "Empire State Building",
   "description": "One of the most famous sky scrapers in the world!",
   "address": "20 W 34th St, New York, NY 10001",
-  "creator": "u1"
+  "creator": "61f1b1f8100bb1cd8b75cf5e"
 }
 
 ### Read (get) a place by it's id
@@ -25,4 +25,26 @@ Content-Type: application/json
 }
 
 ### Delete place by it's id
-DELETE http://localhost:5000/api/places/61f159883488701591f1f79d
+DELETE http://localhost:5000/api/places/61f1be4daf7b5e551730d24f
+
+### Create new User
+POST http://localhost:5000/api/users/signup
+Content-Type: application/json
+
+{
+  "name": "thomas",
+  "email": "thomas@thomas.com",
+  "password": "testers"
+}
+
+### Login User
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "thomas@thomas.com",
+  "password": "testtom"
+}
+
+### Get all users
+GET http://localhost:5000/api/users

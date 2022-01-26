@@ -2,48 +2,74 @@ const { v4: uuidv4 } = require("uuid");
 
 const {expressValidatorError} = require('./places-controllers');
 const HttpError = require("../models/http-error");
+const User = require('../models/User');
 
-const DUMMY_USERS = [
-  {
-    id: 'u1',
-    name: 'Max Swartz',
-    email: 'max@gmail.com',
-    password: 'testers'
+
+// ** Get all users
+async function getUsers(req, res, next) {
+  let users;
+  try {
+    users = await User.find({}, '-password');
+    // users = await User.find({}, 'name email');
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError('Fetching users failed, please try again later.', 500));
   }
-]
 
-function getUsers(req, res, next) {
-  res.status(200).json({users: DUMMY_USERS});
+  res.json({users: users.map(user => user.toObject({ getters: true }))});
 }
 
-function signup(req, res, next) {
-  expressValidatorError(req);
+// ** Sign up a user (create)
+async function signup(req, res, next) {
+  expressValidatorError(req, next);
 
   const {name, email, password} = req.body;
 
-  const existedUser = DUMMY_USERS.find((user => user.email === email));
-
-  if (existedUser){
-    throw new HttpError('Could not create user, email is already used', 422)
+  let existingUser;
+  try {
+    existingUser = await User.findOne({email: email});
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError('Signing up failed, please try again later.', 500));
   }
 
-  const createdUser = {
-    id: uuidv4(),
+  if (existingUser){
+    //throw new HttpError('Could not create user, email is already used', 422); //THROW DOES NOT WORK WELL WITH PROMISES AND CREATES BUGS
+    return next(new HttpError('Could not create user, email is already used', 422));
+  }
+
+  const createdUser = new User({
     name,
     email,
-    password
-  };
+    password,
+    image: 'here goes the user profile image',
+    places: []
+  });
 
-  DUMMY_USERS.push(createdUser);
-  res.status(201).json({user: createdUser});
+  try {
+    await createdUser.save();
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError('Signing up failed, please try again later.', 500));
+  }
+
+  res.status(201).json({user: createdUser.toObject({getters: true})});
 }
 
-function login(req, res, next) {
+// ** Login a user
+async function login(req, res, next) {
   const {email, password} = req.body;
 
-  const loggedUser = DUMMY_USERS.find(user => user.email === email); // I find the user first, then check if the password is correct
+  let loggedUser;
+  try {
+    loggedUser = await User.findOne({email: email});
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError('Signing up failed, please try again later.', 500));
+  }
+
   if (!loggedUser || loggedUser.password !== password){
-    throw new HttpError('Could not verify user, check again the credentials', 401);
+    return next(new HttpError('Could not verify user, check again the credentials', 401));
   }
 
   res.json({message: 'Loggen in!'})
