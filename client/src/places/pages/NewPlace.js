@@ -6,7 +6,7 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
 } from '../../shared/util/validators';
-import './NewPlace.css';
+import './PlaceForm.css';
 
 const formReducer = (state, action) => {
   debugger;
@@ -60,9 +60,15 @@ function NewPlace() {
     });
   }, []); //? if the second argument is an empty array, the value will be memoized once and always returned. If the second argument is omitted, the value will never be memoized, and the useCallback and the useMemo doesn't do anything.
 
+  const placeSubmitHandler = (event) => {
+    event.preventDefault();
+    console.log(formState.inputs);
+    debugger
+  }
+
   console.log(formState.isValid);
   return (
-    <form className="place-form">
+    <form className="place-form" onSubmit={placeSubmitHandler}>
       <Input
         element="input"
         type="text"
@@ -79,6 +85,14 @@ function NewPlace() {
         validators={[VALIDATOR_MINLENGTH(5)]}
         errorText="Please enter a valid description (at least 5 characters)."
         id="description"
+        onInput={inputHandler}
+      />
+      <Input
+        element="input"
+        label="Adress"
+        validators={[VALIDATOR_REQUIRE()]}
+        errorText="Please enter a valid address."
+        id="address"
         onInput={inputHandler}
       />
       <Button type="submit" disabled={!formState.isValid}>Add Place</Button>

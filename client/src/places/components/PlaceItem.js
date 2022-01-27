@@ -8,7 +8,7 @@ import './PlaceItem.css';
 
 function PlaceItem(props) {
   const [showMap, setShowMap] = useState(false);
-
+  debugger;
   const openMapHandler = () => setShowMap(true);
   const closeMapHandler = () => setShowMap(false);
 
