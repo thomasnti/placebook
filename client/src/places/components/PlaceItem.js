@@ -8,9 +8,24 @@ import './PlaceItem.css';
 
 function PlaceItem(props) {
   const [showMap, setShowMap] = useState(false);
-  debugger;
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+
   const openMapHandler = () => setShowMap(true);
   const closeMapHandler = () => setShowMap(false);
+
+  const showDeleteWarningHandler = () => {
+    setShowDeleteModal(true);
+  };
+
+  const cancelDeleteHandler = () => {
+    setShowDeleteModal(false);
+  }
+    
+
+  const deleteHandler = () => {
+    setShowDeleteModal(false);
+    console.log('Deleting request!!');
+  } 
 
   return (
     <React.Fragment>
@@ -23,9 +38,24 @@ function PlaceItem(props) {
         footer={<Button onClick={closeMapHandler}>Close</Button>}
       >
         <div className="map-container">
-          <Map center={props.coordinates} zoom={14}/> 
+          <Map center={props.coordinates} zoom={14} />
           {/* google maps need a center and zoom level in order to be rendered */}
         </div>
+      </Modal>
+      <Modal
+        show={showDeleteModal}
+        onCancel={cancelDeleteHandler}
+        header="Are you sure?"
+        footer={
+          <React.Fragment>
+            <Button inverse onClick={cancelDeleteHandler}>
+              Cancel
+            </Button>
+            <Button onClick={deleteHandler}>Delete</Button>
+          </React.Fragment>
+        }
+      >
+        <p>Do you want to proceed and delete this place?</p>
       </Modal>
       <Card className="place-item__content">
         <li className="place-item">
@@ -42,7 +72,7 @@ function PlaceItem(props) {
               View on Map
             </Button>
             <Button to={`/places/${props.id}`}>Edit</Button>
-            <Button danger>Delete</Button>
+            <Button danger onClick={showDeleteWarningHandler}>Delete</Button>
           </div>
         </li>
       </Card>

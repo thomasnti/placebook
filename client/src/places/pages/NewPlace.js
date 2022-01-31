@@ -34,7 +34,6 @@ function NewPlace() {
   const placeSubmitHandler = (event) => {
     event.preventDefault();
     console.log(formState.inputs);
-    debugger
   }
 
   console.log(formState.isValid);

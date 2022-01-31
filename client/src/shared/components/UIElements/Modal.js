@@ -27,9 +27,9 @@ function ModalOverlay(props) {
 function Modal(props) {
   return (
     <React.Fragment>
-      {props.show && <Backdrop />}
+      {props.show && <Backdrop onClick={props.onCancel} />}
       <CSSTransition
-        in={props.show}
+        in={props.show} // if show is false the childer of this are hidden
         mountOnEnter
         unmountOnExit
         timeout={200}
