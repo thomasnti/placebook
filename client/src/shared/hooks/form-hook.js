@@ -1,11 +1,13 @@
 import { useCallback, useReducer } from "react";
 
 const formReducer = (state, action) => {
-  debugger;
   switch (action.type) {
     case 'INPUT_CHANGE':
       let isFormValid = true;
       for (const inputId in state.inputs) {
+        if (!state.inputs[inputId]) { // If it is undefined i dont want to validate it
+          continue;
+        }
         if (inputId === action.inputId) {
           isFormValid = isFormValid && action.isValid
         } else {
