@@ -1,0 +1,7 @@
+.place-list {
+  list-style: none;
+  width: 90%;
+  max-width: 40rem;
+  margin: 1rem auto; /* centers the whole place component */
+  padding: 0;
+}
