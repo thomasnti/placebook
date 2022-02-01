@@ -93,7 +93,7 @@ function UpdatePlace() {
       </div>
     );
   }
-debugger
+
   if (isLoading) {
     return (
       <div className="center">
