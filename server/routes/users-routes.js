@@ -11,7 +11,8 @@ router.post(
   "/signup",
   [
     check("name").not().isEmpty(),
-    check("email").normalizeEmail().isEmail(),
+    // https://github.com/express-validator/express-validator/issues/946
+    check("email").normalizeEmail({gmail_remove_dots: false}).isEmail(),
     check("password").isLength({ min: 6 }),
   ],
   usersControllers.signup
