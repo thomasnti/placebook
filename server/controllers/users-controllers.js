@@ -42,7 +42,7 @@ async function signup(req, res, next) {
     name,
     email,
     password,
-    image: 'here goes the user profile image',
+    image: 'https://freebiemnl.com/wp-content/uploads/2021/10/god-of-war.jpg',
     places: []
   });
 
@@ -72,7 +72,10 @@ async function login(req, res, next) {
     return next(new HttpError('Could not verify user, check again the credentials', 401));
   }
 
-  res.json({message: 'Loggen in!'})
+  res.json({
+    message: 'Loggen in!',
+    user: loggedUser.toObject({ getters: true }),
+  });
 }
 
 
