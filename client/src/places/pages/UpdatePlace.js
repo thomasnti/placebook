@@ -111,12 +111,11 @@ function UpdatePlace() {
   }
 
 
-  // debugger;
+  debugger;
   console.log(formState);
   return (
     <React.Fragment>
       <ErrorModal error={error} onClear={clearError} />
-      {/*  */}
       {!isLoading && placeToUpdate && (
       <form className="place-form" onSubmit={placeUpdateSubmitHandler}>
         <Input

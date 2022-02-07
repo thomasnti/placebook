@@ -52,6 +52,13 @@ function UserPlaces() {
     fetchUserPlaces();
   }, [sendRequest, userId]);
 
+  const deletePlaceHandler = (placeId) => {
+    setCurrentUserPlaces(prevPlaces => {
+      // debugger
+      return prevPlaces.filter(place => place.id !== placeId);
+    })
+  }
+
   // better name items to places
   return (
     <React.Fragment>
@@ -61,7 +68,7 @@ function UserPlaces() {
           <LoadingSpinner />
         </div>
       )}
-      {!isLoading && currentUserPlaces && <PlaceList items={currentUserPlaces} />}
+      {!isLoading && currentUserPlaces && <PlaceList items={currentUserPlaces} onDeletePlace={deletePlaceHandler}  />}
     </React.Fragment>
   );
 }
