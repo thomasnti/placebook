@@ -67,7 +67,7 @@ async function createPlace(req, res, next) {
   const createdPlace = new Place({
     title, // shortcut for title: title
     description,
-    image: 'link for the image',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Empire_State_Building_from_the_Top_of_the_Rock.jpg/447px-Empire_State_Building_from_the_Top_of_the_Rock.jpg',
     address,
     location: coordinates,
     creator

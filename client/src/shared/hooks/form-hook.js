@@ -1,6 +1,7 @@
 import { useCallback, useReducer } from "react";
 
 const formReducer = (state, action) => {
+  // debugger;
   switch (action.type) {
     case 'INPUT_CHANGE':
       let isFormValid = true;
@@ -23,6 +24,7 @@ const formReducer = (state, action) => {
         isValid: isFormValid
       };
       case 'SET_DATA':
+        debugger;
         return {
           inputs: action.inputs,
           isValid: action.isFormValid

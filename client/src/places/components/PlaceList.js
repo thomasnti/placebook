@@ -6,7 +6,7 @@ import Button from "../../shared/components/FormElements/Button";
 import "./PlaceList.css";
 
 function PlaceList(props) {
-  if (props.items.length === 0) {
+  if (props.items.length === 0 || !props.items) {
     return (
       <div className="place-list center">
         <Card>
@@ -24,7 +24,7 @@ function PlaceList(props) {
           id={place.id}
           title={place.title}
           description={place.description}
-          image={place.imageUrl}
+          image={place.image}
           address={place.address}
           creatorId={place.creator}
           coordinates={place.location}

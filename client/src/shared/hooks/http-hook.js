@@ -8,7 +8,6 @@ function useHttp() {
 
   const sendRequest = useCallback(
     async (url, method = 'GET', body = null, headers = {}) => {
-    debugger
     setIsLoading(true);
     const httpAbortController = new AbortController();
     activeHttpRequests.current.push(httpAbortController);
