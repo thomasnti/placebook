@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 import Button from './Button';
 import './ImageUpload.css';
@@ -7,16 +7,46 @@ function ImageUpload(props) {
   const filePickerRef = useRef(),
     imagePreviewRef = useRef();
 
+  const [file, setFile] = useState(),
+        [previewUrl, setPreviewUrl] = useState(),
+        [isValid, setIsValid] = useState();
+
   const pickImageHandler = (event) => {
     filePickerRef.current.click();
-    debugger;
     imagePreviewRef.current.style.display = 'block'
   };
 
-  const imagePickedHandler = (event) => {
-    console.log(event.target);
+  // useEffect to generate a preview when file changes
+  useEffect(() => {
+    debugger;
+    if (!file) return;
+
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      debugger;
+      setPreviewUrl(fileReader.result)
+    };
+    fileReader.readAsDataURL(file);
+  }, [file])
+
+  const imagePickerHandler = (event) => {
+    debugger;
+    let pickedFile, fileIsValid = isValid;
+
+    if (event.target.files && event.target.files.length === 1) {
+      pickedFile = event.target.files[0];
+      setFile(pickedFile);
+      setIsValid(true);
+      fileIsValid = true;
+    } else {
+      setIsValid(false);
+      fileIsValid = false;
+    }
+
+    props.onInput(props.id, pickedFile, fileIsValid);
   };
 
+  console.log(previewUrl);
   return (
     <div className="form-control">
       <input
@@ -25,11 +55,12 @@ function ImageUpload(props) {
         style={{ display: 'none' }}
         accept=".jpg,.jpeg,.png"
         ref={filePickerRef}
-        onChange={imagePickedHandler}
+        onChange={imagePickerHandler}
       />
       <div className={`image-upload ${props.center && 'center'}`}>
         <div ref={imagePreviewRef} className="image-upload__preview">
-          <img src="" alt="Image preview" />
+          {previewUrl && <img src={previewUrl} alt="Image preview" />}
+          {!previewUrl && <p>Please pick up an image !</p>}
         </div>
         <Button type="button" onClick={pickImageHandler}>
           Pick Profile Image

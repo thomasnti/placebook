@@ -39,15 +39,19 @@ function Auth() {
     if (!isLoginMode) {
       // An eimai sto Sign up kai exw pathsei na paw sto login
       setFormData(
-        { ...formState.inputs, name: undefined }, // bazw to name undefined gt de thelw na ypologistei sto form Validity
+        { ...formState.inputs, name: undefined, image: undefined }, // bazw to name undefined gt de thelw na ypologistei sto form Validity
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
     } else {
       setFormData(
         { ...formState.inputs, 
-          name: 
-          { value: "", 
+          name: { 
+            value: "", 
             isValid: false 
+          },
+          image: {
+            value: null,
+            isValid: false
           }
         },
         false
@@ -120,7 +124,7 @@ function Auth() {
               onInput={inputHandler}
             />
           )}
-          {!isLoginMode && <ImageUpload id='image' center />}
+          {!isLoginMode && <ImageUpload id='image' center onInput={inputHandler} />}
           <Input
             element="input"
             type="email"
