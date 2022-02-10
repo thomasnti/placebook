@@ -1,0 +1,17 @@
+.image-upload {
+  flex-direction: column;
+}
+
+.image-upload__preview {
+  width: 13rem;
+  height: 13rem;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+.image-upload__preview img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
