@@ -85,16 +85,17 @@ function Auth() {
     } else {
       // SIGN UP
       try {
+        // Because i want to send an image to the server i use FormData because images are binary data
+        const formData = new FormData();
+        formData.append('email', formState.inputs.email.value);
+        formData.append('name', formState.inputs.name.value);
+        formData.append('password', formState.inputs.password.value);
+        formData.append('image', formState.inputs.image.value);
+
         const responseData = await sendRequest('http://localhost:5000/api/users/signup',
         'POST', 
-        JSON.stringify({
-          name: formState.inputs.name.value,
-          email: formState.inputs.email.value,
-          password: formState.inputs.password.value
-        }), 
-        {
-          'Content-Type': 'Application/json'
-        })
+        formData
+        );
 
         auth.login(responseData.user.id);
       } catch (error) {

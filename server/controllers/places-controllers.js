@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const {validationResult} = require('express-validator');
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 const HttpError = require("../models/http-error");
 const getCoordsForAdrress = require('../util/location');
@@ -67,7 +68,8 @@ async function createPlace(req, res, next) {
   const createdPlace = new Place({
     title, // shortcut for title: title
     description,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Empire_State_Building_from_the_Top_of_the_Rock.jpg/447px-Empire_State_Building_from_the_Top_of_the_Rock.jpg',
+    // image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Empire_State_Building_from_the_Top_of_the_Rock.jpg/447px-Empire_State_Building_from_the_Top_of_the_Rock.jpg',
+    image: req.file.path,
     address,
     location: coordinates,
     creator
@@ -172,6 +174,9 @@ async function deletePlace(req, res, next) {
       500
     ));
   }
+
+  const imagePath = place.image;
+  fs.unlink(imagePath, (err) => console.log(err));
 
   res.status(200).json({message: `Place with id: ${placeId} and title: ${place.title} deleted!`})
 }

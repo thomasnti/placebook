@@ -111,7 +111,6 @@ function UpdatePlace() {
   }
 
 
-  debugger;
   console.log(formState);
   return (
     <React.Fragment>

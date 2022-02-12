@@ -13,6 +13,7 @@ import {AuthContext} from '../../shared/context/auth-context';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import './PlaceForm.css';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 
 
 function NewPlace() {
@@ -35,6 +36,10 @@ function NewPlace() {
       address: {
         value: '',
         isValid: false
+      },
+      image: {
+        value: null,
+        isValid: false
       }
     },
     false, //* overall form validity
@@ -46,14 +51,15 @@ function NewPlace() {
     console.log(formState.inputs);
 
     try {
+      const formData = new FormData();
+      formData.append('title', formState.inputs.title.value);
+      formData.append('description', formState.inputs.description.value);
+      formData.append('address', formState.inputs.address.value);
+      formData.append('creator', auth.userId);
+      formData.append('image', formState.inputs.image.value);
+
       await sendRequest('http://localhost:5000/api/places', 'POST', 
-      JSON.stringify({
-        title: formState.inputs.title.value,
-        description: formState.inputs.description.value,
-        address: formState.inputs.address.value,
-        creator: auth.userId
-      }),
-      {'Content-Type': 'application/json' }
+      formData,
       );
       //push the user to a path
       history.push('/');
@@ -94,6 +100,7 @@ function NewPlace() {
           id="address"
           onInput={inputHandler}
         />
+        <ImageUpload id='image' onInput={inputHandler} center/>
         <Button type="submit" disabled={!formState.isValid}>Add Place</Button>
       </form>
     </React.Fragment>

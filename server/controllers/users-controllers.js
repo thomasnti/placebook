@@ -42,7 +42,7 @@ async function signup(req, res, next) {
     name,
     email,
     password,
-    image: 'https://freebiemnl.com/wp-content/uploads/2021/10/god-of-war.jpg',
+    image: req.file.path,
     places: []
   });
 

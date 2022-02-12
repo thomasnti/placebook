@@ -2,6 +2,7 @@ const express = require("express");
 const { check } = require("express-validator");
 
 const placesControllers = require("../controllers/places-controllers");
+const imageUpload = require('../middleware/image-upload');
 
 const router = express.Router(); //! router with capital R
 
@@ -14,13 +15,14 @@ router.get("/user/:uid", placesControllers.getPlacesByUserId);
 //* Create a place
 router.post(
   "/",
+  imageUpload.single('image'),
   [
     check("title").not().isEmpty(),
     check("description").isLength({ min: 5 }),
     check("address").not().isEmpty(),
   ],
   placesControllers.createPlace
-); // I can use more than one middlewares in a path , they execute from left to right
+); // I can use more than one middlewares in a path , they execute from left to right (top to bottom with this function format)
 
 //* Update a place
 router.patch(

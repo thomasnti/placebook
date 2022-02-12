@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const fs = require('fs');
+const path = require('path');
 
 const placesRoutes = require("./routes/places-routes");
 const usersRoutes = require("./routes/users-routes");
@@ -10,6 +12,8 @@ const HttpError = require("./models/http-error");
 const app = express();
 
 app.use(bodyParser.json());
+
+app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
 //! This fixes CORS error on the browser
 app.use((req, res, next) => {
@@ -33,6 +37,12 @@ app.use(() => {
 
 //* Error handling middleware , callback runs when server 'throws' (with throw keyword) an error
 app.use((error, req, res, next) => {
+  if (req.file) {
+    fs.unlink(req.file.path, err => {
+      console.log(err);
+    }); // if the file is saved and we have an error DELETE the file !
+  }
+
   if (res.headerSent) {
     return next(error);
   }

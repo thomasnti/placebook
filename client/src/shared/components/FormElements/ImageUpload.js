@@ -18,19 +18,17 @@ function ImageUpload(props) {
 
   // useEffect to generate a preview when file changes
   useEffect(() => {
-    debugger;
     if (!file) return;
 
     const fileReader = new FileReader();
     fileReader.onload = () => {
-      debugger;
       setPreviewUrl(fileReader.result)
     };
     fileReader.readAsDataURL(file);
   }, [file])
 
   const imagePickerHandler = (event) => {
-    debugger;
+
     let pickedFile, fileIsValid = isValid;
 
     if (event.target.files && event.target.files.length === 1) {
