@@ -14,6 +14,9 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
+//! Deployment in a single server
+app.use(express.static(path.join('public')));
+
 
 //! This fixes CORS error on the browser
 app.use((req, res, next) => {
@@ -29,6 +32,11 @@ app.use((req, res, next) => {
 
 app.use("/api/places", placesRoutes); // api/places = path (route) for which the middleware function applies.
 app.use("/api/users", usersRoutes);
+
+//! Deployment in a single server
+app.use((req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
 
 // if the endpoint is not in the above routes
 app.use(() => {
@@ -55,7 +63,7 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(`mongodb+srv://${process.env.DB_USER +':'+ process.env.DB_PASS}@cluster0.tb3hp.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
   .then(() => {
-    app.listen(5000, () => {
+    app.listen(process.env.PORT || 5000, () => {
       console.log("Placebook's server is listening on port 5000");
     });
   })

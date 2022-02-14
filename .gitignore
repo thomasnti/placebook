@@ -3,3 +3,4 @@ node_modules/
 uploads/
 nodemon.json
 .env.production
+/server/public
