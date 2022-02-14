@@ -53,7 +53,7 @@ app.use((error, req, res, next) => {
 
 // connect returns a promise
 mongoose
-  .connect(`mongodb+srv://${process.env.DB_USER +':'+ process.env.DB_PASS}@cluster0.tb3hp.mongodb.net/places?retryWrites=true&w=majority`)
+  .connect(`mongodb+srv://${process.env.DB_USER +':'+ process.env.DB_PASS}@cluster0.tb3hp.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
   .then(() => {
     app.listen(5000, () => {
       console.log("Placebook's server is listening on port 5000");
