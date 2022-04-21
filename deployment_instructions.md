@@ -1,4 +1,4 @@
-DEPLOYMENT IN A SINGLE SERVER
+# DEPLOYMENT IN A SINGLE SERVER
 
 1. Deploy the backend standalone (follow heroku instructions).
 2. In heroku go to project settings/ reveal config vars (set environment variables).
@@ -9,3 +9,5 @@ DEPLOYMENT IN A SINGLE SERVER
 7. Grab the build folder content from the frontend and paste it to the back end inside a folder (maybe named public or client).
 8. Test it with npm run dev before you push changes to heroku.
 9. Repeat step 4 !
+
+---
